@@ -15,7 +15,10 @@ Allows the user to delete their own profile from the frontend account page. This
 
 Allows the user to delete their own profile from the **frontend account page**. This is an addon for WP User Manager. After the account is deleted, the user can be redirected to a custom page.
 
-[Download WP User Manager](https://wordpress.org/plugins/wp-user-manager/) | [website](https://wpusermanager.com) | [addons](https://wpusermanager.com/addons) | [documentation](http://docs.wpusermanager.com/) | [support](https://wpusermanager.com/support/)
+> This is a free add-on for the [WP User Manager plugin](https://wordpress.org/plugins/wp-user-manager/). You must download and install the [WP User Manager plugin](https://wordpress.org/plugins/wp-user-manager/) before you can use this addon.
+> Download WPUM for free here [https://wordpress.org/plugins/wp-user-manager/](https://wordpress.org/plugins/wp-user-manager/)
+
+[website](https://wpusermanager.com) | [addons](https://wpusermanager.com/addons) | [documentation](http://docs.wpusermanager.com/) | [support](https://wpusermanager.com/support/)
 
 = How it works =
 
