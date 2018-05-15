@@ -1,0 +1,6 @@
+vendor
+composer.lock
+*.zip
+deploy.sh
+release.sh
+wpum-delete-account-svn

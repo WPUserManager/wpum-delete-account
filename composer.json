@@ -1,0 +1,5 @@
+{
+    "require": {
+        "wp-user-manager/wpum-extension-activation": "dev-master"
+    }
+}
