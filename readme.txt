@@ -1,5 +1,5 @@
-=== WPUM Delete Account ===
-Contributors: alessandro.tesoro
+=== WP User Manager Delete Account ===
+Contributors: alessandro.tesoro, wpusermanager
 Tags: community, member, delete user, user delete, delete account, gdpr
 Requires at least: 4.7
 Tested up to: 4.9
