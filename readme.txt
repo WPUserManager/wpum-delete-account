@@ -4,7 +4,7 @@ Tags: community, member, delete user, user delete, delete account, gdpr
 Requires at least: 4.7
 Tested up to: 4.9
 Requires PHP: 5.5
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,3 +33,7 @@ Please refer to the [documentation here](https://docs.wpusermanager.com/category
 1. New tab within the account page from where users can delete their own account.
 2. User needs to confirm account cancellation. Example showing Firefox prompt.
 3. Setting from where you can choose where to redirect users after they've deleted their account.
+
+== Changelog ==
+
+- Fix: compatibility with older versions of php

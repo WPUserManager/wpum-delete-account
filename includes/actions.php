@@ -22,7 +22,7 @@ function wpumda_register_account_tab( $tabs ) {
 
 	$tabs['delete-account'] = [
 		'name'     => esc_html__( 'Delete account', 'wpum-delete-account' ),
-		'priority' => 0,
+		'priority' => 3,
 	];
 
 	return $tabs;

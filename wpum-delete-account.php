@@ -3,7 +3,7 @@
 Plugin Name: WPUM Delete Account
 Plugin URI:  https://wpusermanager.com
 Description: Allows the user to delete their own profile from the frontend account page. This is an addon for WP User Manager.
-Version:     1.0.0
+Version:     1.0.1
 Author:      Alessandro Tesoro
 Author URI:  https://wpusermanager.com/
 License:     GPLv3+
@@ -34,7 +34,9 @@ Domain Path: /languages
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 
@@ -48,9 +50,9 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 		 *
 		 * @var WPUMDA() the WPUM Instance
 		 */
-        protected static $_instance;
+		protected static $_instance;
 
-        /**
+		/**
 		 * Main WPUMDA Instance.
 		 *
 		 * Ensures that only one instance of WPUMDA exists in memory at any one
@@ -71,13 +73,13 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 		public function __construct() {
 
 			// Verify the plugin can run first. If not, disable the plugin automagically.
-            $this->plugin_can_run();
+			$this->plugin_can_run();
 
-            // Plugin is activated now proceed.
-            $this->setup_constants();
-            $this->autoload();
-            $this->includes();
-            $this->init_hooks();
+			// Plugin is activated now proceed.
+			$this->setup_constants();
+			$this->autoload();
+			$this->includes();
+			$this->init_hooks();
 
 		}
 
@@ -88,21 +90,21 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 		 */
 		private function autoload() {
 			require __DIR__ . '/vendor/autoload.php';
-        }
+		}
 
-        /**
-         * Load required files for the addon.
-         *
-         * @return void
-         */
-        public function includes() {
+		/**
+		 * Load required files for the addon.
+		 *
+		 * @return void
+		 */
+		public function includes() {
 
-            require_once WPUMDA_PLUGIN_DIR . 'includes/settings.php';
-            require_once WPUMDA_PLUGIN_DIR . 'includes/actions.php';
+			require_once WPUMDA_PLUGIN_DIR . 'includes/settings.php';
+			require_once WPUMDA_PLUGIN_DIR . 'includes/actions.php';
 
-        }
+		}
 
-        /**
+		/**
 		 * Setup plugin constants
 		 *
 		 * @access private
@@ -113,7 +115,7 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 
 			// Plugin version.
 			if ( ! defined( 'WPUMDA_VERSION' ) ) {
-				define( 'WPUMDA_VERSION', '1.0.0' );
+				define( 'WPUMDA_VERSION', '1.0.1' );
 			}
 
 			// Plugin Folder Path.
@@ -136,9 +138,9 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 				define( 'WPUMDA_SLUG', plugin_basename( __FILE__ ) );
 			}
 
-        }
+		}
 
-        /**
+		/**
 		 * Hook in our actions and filters.
 		 *
 		 * @return void
@@ -165,17 +167,19 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 
 			require __DIR__ . '/vendor/autoload.php';
 
-			$requirements_check = new WPUM_Extension_Activation( array(
-				'title'        => 'WPUM Delete Account',
-				'wpum_version' => '2.0.0',
-				'file'         => __FILE__,
-			) );
+			$requirements_check = new WPUM_Extension_Activation(
+				array(
+					'title'        => 'WPUM Delete Account',
+					'wpum_version' => '2.0.0',
+					'file'         => __FILE__,
+				)
+			);
 
 			return $requirements_check->passes();
 
 		}
 
-    }
+	}
 
 endif;
 
