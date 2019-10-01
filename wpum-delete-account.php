@@ -48,7 +48,7 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 		/**
 		 * WPUMDA Instance.
 		 *
-		 * @var WPUMDA() the WPUM Instance
+		 * @var WPUM_Delete_Account the WPUM Instance
 		 */
 		protected static $_instance;
 
@@ -58,20 +58,28 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 		 * Ensures that only one instance of WPUMDA exists in memory at any one
 		 * time. Also prevents needing to define globals all over the place.
 		 *
-		 * @return WPUMDA
+		 * @return WPUM_Delete_Account
 		 */
 		public static function instance() {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self();
+				self::$_instance->run();
 			}
+
 			return self::$_instance;
+		}
+
+		/**
+		 * Only load the addon on the WPUM core hook, ensuring the plugin is active.
+		 */
+		public function run() {
+			add_action( 'after_wpum_init', array( $this, 'init' ) );
 		}
 
 		/**
 		 * Get things up and running.
 		 */
-		public function __construct() {
-
+		public function init() {
 			// Verify the plugin can run first. If not, disable the plugin automagically.
 			$this->plugin_can_run();
 
