@@ -1,10 +1,10 @@
 === WP User Manager Delete Account ===
-Contributors: alessandro.tesoro, wpusermanager
+Contributors: wpusermanager
 Tags: community, member, delete user, user delete, delete account, gdpr
 Requires at least: 4.7
-Tested up to: 4.9
+Tested up to: 5.4
 Requires PHP: 5.5
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,5 +35,9 @@ Please refer to the [documentation here](https://docs.wpusermanager.com/category
 3. Setting from where you can choose where to redirect users after they've deleted their account.
 
 == Changelog ==
+
+= 1.0.2 (14th June 2020) =
+
+- Improvement: Check plugin is built correctly and WP User Manager exists before loading
 
 - Fix: compatibility with older versions of php

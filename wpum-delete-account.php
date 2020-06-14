@@ -3,7 +3,7 @@
 Plugin Name: WPUM Delete Account
 Plugin URI:  https://wpusermanager.com
 Description: Allows the user to delete their own profile from the frontend account page. This is an addon for WP User Manager.
-Version:     1.0.1
+Version:     1.0.2
 Author:      WP User Manager
 Author URI:  https://wpusermanager.com/
 License:     GPLv3+
@@ -55,7 +55,7 @@ if ( ! class_exists( 'WPUM_Delete_Account' ) ) :
 		/**
 		 * @var string
 		 */
-		protected $version = '1.0.1';
+		protected $version = '1.0.2';
 
 		/**
 		 * Main WPUMDA Instance.
