@@ -4,3 +4,5 @@ composer.lock
 deploy.sh
 release.sh
 wpum-delete-account-svn
+/release
+node_modules
