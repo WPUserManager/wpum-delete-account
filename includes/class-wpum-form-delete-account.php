@@ -145,11 +145,42 @@ class WPUM_Form_Delete_Account extends WPUM_Form {
 
 			if ( $user instanceof WP_User && wp_check_password( $values['delete']['password'], $user->data->user_pass, $user->ID ) && is_user_logged_in() ) {
 
+				/**
+				 * Filter whether to allow the account deletion to proceed.
+				 *
+				 * Return a WP_Error to prevent deletion and display the error message.
+				 *
+				 * @param bool|WP_Error $allowed True to allow, WP_Error to prevent.
+				 * @param WP_User       $user    The user requesting deletion.
+				 */
+				$allowed = apply_filters( 'wpum_before_delete_account_allowed', true, $user );
+
+				if ( is_wp_error( $allowed ) ) {
+					throw new Exception( $allowed->get_error_message() );
+				}
+
+				/**
+				 * Fires before the user account is deleted.
+				 *
+				 * Use this hook to perform cleanup (cancel subscriptions,
+				 * anonymise content, etc.) while the user data still exists.
+				 *
+				 * @param WP_User $user The user being deleted.
+				 */
+				do_action( 'wpum_before_delete_account', $user );
+
 				wp_logout();
 
 				require_once( ABSPATH . 'wp-admin/includes/user.php' );
 
 				wp_delete_user( $user->ID );
+
+				/**
+				 * Fires after the user account has been deleted.
+				 *
+				 * @param int $user_id The ID of the deleted user.
+				 */
+				do_action( 'wpum_after_delete_account', $user->ID );
 
 				$redirect_to = wpum_get_option( 'account_cancellation_redirect' );
 				$redirect_to = is_array( $redirect_to ) && ! empty( $redirect_to ) ? $redirect_to[0] : false;
