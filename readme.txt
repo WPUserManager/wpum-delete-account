@@ -4,7 +4,7 @@ Tags: community, member, delete user, user delete, delete account, gdpr
 Requires at least: 4.7
 Tested up to: 5.4
 Requires PHP: 5.5
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,13 @@ Please refer to the [documentation here](https://docs.wpusermanager.com/category
 3. Setting from where you can choose where to redirect users after they've deleted their account.
 
 == Changelog ==
+
+= 1.0.3 (25th February 2026) =
+
+- New: `wpum_before_delete_account_allowed` filter to conditionally prevent account deletion
+- New: `wpum_before_delete_account` action hook fires before the user is deleted
+- New: `wpum_after_delete_account` action hook fires after the user is deleted
+- Improvement: Updated build tooling and release pipeline
 
 = 1.0.2 (14th June 2020) =
 

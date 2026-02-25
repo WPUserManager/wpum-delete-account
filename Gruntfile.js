@@ -27,16 +27,23 @@ module.exports = function( grunt ) {
 					'!.gitignore',
 					'!.gitmodules',
 					'!yarn.lock',
+					'!package-lock.json',
+					'!.yarnrc',
 					'!README.md',
 					'!composer.lock',
 					'!composer.json',
-					'!.github',
+					'!.github/**',
 					'!release.json',
 					'!playwright.config.ts',
 					'!tsconfig.json',
 					'!.wp-env.json',
 					'!.wp-env.override.json',
-					'!test-results/**'
+					'!tests/**',
+					'!test-results/**',
+					'!phpcs.xml.dist',
+					'!phpstan.neon.dist',
+					'!phpstan-baseline.neon',
+					'!phpstan-stubs.php'
 				],
 				dest: 'release/<%= pkg.version %>/'
 			}

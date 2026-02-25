@@ -1,0 +1,7 @@
+{
+  "type": "addon",
+  "channels": { "wordpress_org": false, "edd": true },
+  "edd_download_id": 25531,
+  "main_file": "wpum-delete-account.php",
+  "version_locations": ["header"]
+}
