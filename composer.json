@@ -1,5 +1,10 @@
 {
     "require": {
         "wp-user-manager/wpum-extension-activation": "dev-master"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
     }
 }
