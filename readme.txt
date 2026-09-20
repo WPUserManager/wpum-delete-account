@@ -2,7 +2,7 @@
 Contributors: wpusermanager
 Tags: community, member, delete user, user delete, delete account, gdpr
 Requires at least: 4.7
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 5.5
 Stable tag: 1.0.3
 License: GPLv2 or later
