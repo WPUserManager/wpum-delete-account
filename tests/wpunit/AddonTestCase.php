@@ -51,12 +51,13 @@ abstract class AddonTestCase extends \Codeception\TestCase\WPTestCase {
 		global $wpum_options;
 		$wpum_options = get_option( 'wpum_settings' ) ?: array();
 
+		// Fail, not skip: a skipped suite would still pass the release gate.
 		if ( ! function_exists( 'WPUM' ) ) {
-			$this->markTestSkipped( 'WPUM plugin is not active.' );
+			$this->fail( 'WPUM plugin is not active.' );
 		}
 
 		if ( ! class_exists( 'WPUM_Delete_Account' ) ) {
-			$this->markTestSkipped( 'WPUM Delete Account addon is not active.' );
+			$this->fail( 'WPUM Delete Account addon is not active.' );
 		}
 
 		$this->ensure_tables();

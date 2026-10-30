@@ -10,20 +10,13 @@ export const PASSWORD = 'TestPass123!';
  * Run a WP-CLI command via wp-env against the test site.
  */
 export function wpCli(command: string): string {
-  try {
-    const result = execSync(`npx @wordpress/env run tests-cli wp ${command}`, {
-      cwd: process.env.PLUGIN_DIR || process.cwd(),
-      encoding: 'utf-8',
-      timeout: 60000,
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    return result.trim();
-  } catch (error: any) {
-    if (error.stdout) {
-      return error.stdout.trim();
-    }
-    throw error;
-  }
+  const result = execSync(`npx @wordpress/env run tests-cli wp ${command}`, {
+    cwd: process.env.PLUGIN_DIR || process.cwd(),
+    encoding: 'utf-8',
+    timeout: 60000,
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
+  return result.trim();
 }
 
 /**

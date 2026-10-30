@@ -33,7 +33,7 @@ jobs:
 
       - name: Check syntax (PHP 7.4)
         run: |
-          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -P4 php -l
+          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -n1 -P4 php -l
 
       - name: Setup PHP 8.0
         uses: shivammathur/setup-php@v2
@@ -43,7 +43,7 @@ jobs:
 
       - name: Check syntax (PHP 8.0)
         run: |
-          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -P4 php -l
+          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -n1 -P4 php -l
 
       - name: Setup PHP 8.1
         uses: shivammathur/setup-php@v2
@@ -53,7 +53,7 @@ jobs:
 
       - name: Check syntax (PHP 8.1)
         run: |
-          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -P4 php -l
+          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -n1 -P4 php -l
 
       - name: Setup PHP 8.2
         uses: shivammathur/setup-php@v2
@@ -63,7 +63,7 @@ jobs:
 
       - name: Check syntax (PHP 8.2)
         run: |
-          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -P4 php -l
+          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -n1 -P4 php -l
 
       - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
@@ -73,7 +73,7 @@ jobs:
 
       - name: Check syntax (PHP 8.3)
         run: |
-          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -P4 php -l
+          find . -name "*.php" -not -path "./vendor/*" -not -path "./release/*" | xargs -n1 -P4 php -l
 
       - name: Setup PHP 8.2 for PHPCS and PHPStan
         uses: shivammathur/setup-php@v2
