@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Register a new tab within the account page.
  *
  * @param array $tabs
- * @return void
+ * @return array
  */
 function wpumda_register_account_tab( $tabs ) {
 
@@ -35,7 +35,7 @@ add_filter( 'wpum_get_account_page_tabs', 'wpumda_register_account_tab' );
  *
  * @param string $path
  * @param string $form_name
- * @return void
+ * @return string
  */
 function wpumda_register_form_path( $path, $form_name ) {
 

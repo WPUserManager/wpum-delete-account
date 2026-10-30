@@ -40,7 +40,8 @@ module.exports = function( grunt ) {
 					'!.wp-env.override.json',
 					'!tests/**',
 					'!test-results/**',
-					'!phpcs.xml.dist',
+					'!playwright-report/**',
+					'!phpcs.xml',
 					'!phpstan.neon.dist',
 					'!phpstan-baseline.neon',
 					'!phpstan-stubs.php'
