@@ -21,30 +21,25 @@ None of these lets anyone delete an account they shouldn't.
 | Bug | Test |
 |---|---|
 | A redirect page that has since been deleted leaves the member on a blank page: `get_permalink()` returns false, `wp_safe_redirect()` does nothing and the handler exits | `DeleteAccountTest::test_a_deleted_redirect_page_falls_back_to_the_home_page` |
-| `false` from `wpum_before_delete_account_allowed` still deletes the account: only a `WP_Error` is honoured | `DeleteAccountTest::test_false_from_the_allowed_filter_stops_the_deletion` |
 | An apostrophe in a translated "Are you sure?" is a JavaScript syntax error, so `confirm()` never runs and the form posts without asking. `esc_html_e()` in the `onsubmit` attribute should be `esc_js()` | `FormTest::test_an_apostrophe_in_a_translation_keeps_the_confirmation_working` |
 | A mistyped password is printed back into the form's HTML as the field's value | `SecurityTest::test_a_wrong_password_is_not_printed_back_into_the_form` |
 | The tab and the form are added for everyone, so `[wpum_account]` outside WPUM's account page shows them to visitors. On the account page WPUM redirects visitors first | `AccountTabTest::test_visitors_never_see_the_tab_or_the_form` |
 | A visitor posting the form gets a PHP error, a fatal on PHP 8: the password is checked against `$user->data->user_pass` before `is_user_logged_in()`. Nothing is deleted | `SecurityTest::test_a_visitor_gets_the_wrong_password_error` |
 | The text domain never loads: the `plugins_loaded` hook at priority 0 is added while priority 0 is already running | `SmokeTest::test_the_text_domain_loads_while_wordpress_boots` |
 
-Behaviour that's pinned by a passing test but may not be what's wanted:
+Decided, and staying as they are:
 
-- **The last administrator can delete their account**, leaving the site with none. wp-admin
-  refuses to delete the current user, the form doesn't. A site can block it with
-  `wpum_before_delete_account_allowed` (`RolesTest`).
-- **Comments stay** with the member's name and email after the account has gone (`ContentTest`).
-  The readme's tags include `gdpr`.
 - **No email** goes to the member or the admin (`DeleteAccountTest::test_no_email_is_sent`).
-
-Not tested anywhere:
-
 - **Multisite**: `wp_delete_user()` only removes the member from the current site, so their
-  account stays on the network and they can still log in. Neither suite runs on multisite.
-- **The missing vendor directory notice** (`vendor_failed_notice`), which deactivates the plugin.
+  account stays on the network and they can still log in. Neither suite runs on multisite. Only
+  that site's comments are anonymised, and "the last administrator" means of that site.
 - **Password attempts aren't limited**, and `wp_login_failed` doesn't fire, so login limiters don't
   see them. Someone holding a stolen session could guess the password through this form. WPUM's
   change password form is the same.
+
+Not tested anywhere:
+
+- **The missing vendor directory notice** (`vendor_failed_notice`), which deactivates the plugin.
 - **Theme overrides** of `forms/delete-account-form.php`.
 
 ## Loading and release
@@ -103,7 +98,7 @@ Not tested anywhere:
 | `wpum_before_delete_account` gets the user while they exist and are logged in | ✅ | |
 | `wpum_after_delete_account` gets the ID once they've gone | ✅ | |
 | `wpum_before_delete_account_allowed` gets the user; a `WP_Error` stops it and shows the message, with no cleanup hook | ✅ | |
-| `false` from `wpum_before_delete_account_allowed` stops it | 🐞 | |
+| `false` from `wpum_before_delete_account_allowed` stops it with a general message and no cleanup hook; a callback returning nothing doesn't | ✅ | |
 | A password with quotes and a backslash works as it does at login: WordPress never unslashes passwords | ✅ | |
 | A password hashed by an older WordPress (phpass) is accepted | ✅ | |
 
@@ -132,8 +127,14 @@ Not tested anywhere:
 
 | Feature | WPUnit | E2E |
 |---|---|---|
-| Every role can delete their own account: no role is protected | ✅ | ✅ (administrator) |
-| The last administrator isn't protected | ✅ | |
+| Every role can delete their own account, while another administrator remains | ✅ | ✅ (administrator) |
+| The last administrator is refused on the server, sees why on the form and stays logged in | ✅ | ✅ |
+| Refusing them runs no hooks and leaves their posts and comments alone | ✅ | ✅ (posts) |
+| A second role doesn't hide the last administrator | ✅ | |
+| Of two administrators, one can go and then the other can't | ✅ | |
+| `wpum_before_delete_account_allowed` can't let the last administrator go, but can still refuse them | ✅ | |
+| The password is checked first, so the wrong one gets the password error | ✅ | |
+| Other roles can leave a site that has no administrator | ✅ | |
 | A site can protect a role with `wpum_before_delete_account_allowed` | ✅ | |
 | A member with two roles is deleted outright | ✅ | |
 
@@ -147,8 +148,14 @@ Not tested anywhere:
 | Uploads are deleted for good | ✅ | |
 | Custom post types follow `delete_with_user` | ✅ | |
 | Other members' content is left alone | ✅ | |
-| Comments stay, with the name and email | ✅ | |
-| A refused deletion leaves the content alone | ✅ | ✅ |
+| Comments stay, with their text, status and date | ✅ | ✅ |
+| Comments lose the name (WordPress's own `Anonymous`, translated), email, URL, IP and browser, and `user_id` becomes 0 | ✅ | ✅ |
+| Comments of every status, and on their own trashed posts | ✅ | |
+| Found by `user_id` (even under an old email) and by email (left while logged out) | ✅ | |
+| Other people's comments are left alone, including guests with no email when the member has none | ✅ | |
+| `wp_anonymize_comment` can keep a comment, as with WordPress's own eraser | ✅ | |
+| Done by the time `wpum_after_delete_account` fires | ✅ | |
+| A refused deletion leaves the content and comments alone | ✅ | ✅ |
 
 ## Settings
 

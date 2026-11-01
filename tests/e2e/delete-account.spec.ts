@@ -6,6 +6,10 @@ import {
   createMember,
   postStatus,
   setRedirect,
+  leaveComment,
+  commentState,
+  onlyAdministrator,
+  restoreAdministrators,
   loginAs,
   wpAdminLogin,
   submitLoginForm,
@@ -79,8 +83,29 @@ test.describe('Deleting an account', () => {
     await expect(page).toHaveURL(/\/wpum-login\//);
   });
 
+  test('their comments stay, with nothing left to identify them', async ({ page, accountPage }) => {
+    createMember('da_commenter');
+    const comment = leaveComment('da_commenter');
+    await loginAs(page, 'da_commenter');
+
+    await page.goto(`${accountPage}delete-account`);
+    await submitDeleteForm(page, PASSWORD);
+    await page.waitForURL((url) => url.pathname === '/');
+
+    expect(commentState(comment)).toEqual({
+      author: 'Anonymous',
+      email: '',
+      url: '',
+      ip: '',
+      agent: '',
+      user_id: 0,
+      content: 'A comment worth keeping.',
+    });
+  });
+
   test('a wrong password keeps the account', async ({ page, accountPage }) => {
     const created = createMember('da_wrong', 'author');
+    const comment = leaveComment('da_wrong');
     await loginAs(page, 'da_wrong');
 
     await page.goto(`${accountPage}delete-account`);
@@ -90,6 +115,7 @@ test.describe('Deleting an account', () => {
 
     expect(member('da_wrong')).not.toBeNull();
     expect(postStatus(created.post)).toBe('publish');
+    expect(commentState(comment).email).toBe('da_wrong@example.com');
 
     // Still logged in here, and the password still works.
     await expect(page.locator(FORM)).toBeVisible();
@@ -121,6 +147,29 @@ test.describe('Deleting an account', () => {
     await page.waitForURL(/\/sorry-to-see-you-go\//);
     await expect(page.getByText('Your account has been deleted.')).toBeVisible();
     expect(member('da_redirect')).toBeNull();
+  });
+
+  test('the last administrator is refused, and keeps their account', async ({ page, accountPage }) => {
+    const created = createMember('da_last_admin', 'administrator');
+    const demoted = onlyAdministrator('da_last_admin');
+
+    try {
+      await loginAs(page, 'da_last_admin');
+
+      await page.goto(`${accountPage}delete-account`);
+      await submitDeleteForm(page, PASSWORD);
+
+      await expect(page.locator('.wpum-message.error')).toContainText(
+        'This is the only administrator account on this site, so it cannot be deleted.'
+      );
+
+      // Still logged in, with everything in place.
+      await expect(page.locator(FORM)).toBeVisible();
+      expect(member('da_last_admin')?.roles).toContain('administrator');
+      expect(postStatus(created.post)).toBe('publish');
+    } finally {
+      restoreAdministrators(demoted);
+    }
   });
 
   test('an administrator can delete their own account', async ({ page, accountPage }) => {

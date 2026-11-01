@@ -38,6 +38,16 @@ abstract class AddonTestCase extends \Codeception\TestCase\WPTestCase {
 	const WRONG_PASSWORD_ERROR = 'The password you entered is incorrect. Your account has not been deleted.';
 
 	/**
+	 * The error shown when a filter returns false.
+	 */
+	const NOT_ALLOWED_ERROR = 'Your account cannot be deleted. Please contact the site administrator.';
+
+	/**
+	 * The error shown to the last administrator.
+	 */
+	const LAST_ADMINISTRATOR_ERROR = 'This is the only administrator account on this site, so it cannot be deleted. Make another user an administrator first.';
+
+	/**
 	 * Emails sent during the test.
 	 *
 	 * @var array
@@ -216,6 +226,56 @@ abstract class AddonTestCase extends \Codeception\TestCase\WPTestCase {
 			'redirect' => $redirect,
 			'errors'   => $this->get_form_errors( $form ),
 		);
+	}
+
+	/**
+	 * Leave a comment with every personal detail WordPress stores.
+	 *
+	 * @param int   $post_id
+	 * @param array $args
+	 *
+	 * @return int
+	 */
+	protected function leave_comment( $post_id, $args = array() ) {
+		return self::factory()->comment->create(
+			array_merge(
+				array(
+					'comment_post_ID'      => $post_id,
+					'comment_content'      => 'A comment worth keeping.',
+					'comment_author'       => 'Leaving Member',
+					'comment_author_email' => 'leaving@example.com',
+					'comment_author_url'   => 'https://leaving.example.com',
+					'comment_author_IP'    => '203.0.113.7',
+					'comment_agent'        => 'Mozilla/5.0 (Leaving Browser)',
+				),
+				$args
+			)
+		);
+	}
+
+	/**
+	 * Assert a comment has no personal details left, past any object cache.
+	 *
+	 * @param int $comment_id
+	 */
+	protected function assertCommentAnonymised( $comment_id ) {
+		global $wpdb;
+
+		$this->assertSame(
+			array(
+				'comment_author'       => 'Anonymous',
+				'comment_author_email' => '',
+				'comment_author_url'   => '',
+				'comment_author_IP'    => '',
+				'comment_agent'        => '',
+				'user_id'              => '0',
+			),
+			$wpdb->get_row( $wpdb->prepare( "SELECT comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_agent, user_id FROM {$wpdb->comments} WHERE comment_ID = %d", $comment_id ), ARRAY_A ) // phpcs:ignore
+		);
+
+		$comment = get_comment( $comment_id );
+		$this->assertSame( 'Anonymous', $comment->comment_author, 'The comment cache should be cleared.' );
+		$this->assertSame( '0', $comment->user_id, 'The comment cache should be cleared.' );
 	}
 
 	/**
