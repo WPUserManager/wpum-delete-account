@@ -135,6 +135,106 @@ class WPUMDA_E2E_Command {
 	}
 
 	/**
+	 * Leave a comment as a member on someone else's post, with every personal detail
+	 * WordPress stores. Prints the comment's ID.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <login>
+	 * : User login.
+	 */
+	public function comment( $args ) {
+		$user = get_user_by( 'login', $args[0] );
+
+		$post_id = wp_insert_post(
+			array(
+				'post_author'  => 1,
+				'post_status'  => 'publish',
+				'post_title'   => 'A post to comment on',
+				'post_content' => 'Comments welcome.',
+			)
+		);
+
+		$comment_id = wp_insert_comment(
+			array(
+				'comment_post_ID'      => $post_id,
+				'user_id'              => $user->ID,
+				'comment_content'      => 'A comment worth keeping.',
+				'comment_author'       => $user->display_name,
+				'comment_author_email' => $user->user_email,
+				'comment_author_url'   => 'https://example.com/' . $user->user_login,
+				'comment_author_IP'    => '203.0.113.7',
+				'comment_agent'        => 'Mozilla/5.0 (E2E)',
+				'comment_approved'     => '1',
+			)
+		);
+
+		WP_CLI::line( (string) $comment_id );
+	}
+
+	/**
+	 * Print a comment's personal details and text as JSON.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <id>
+	 * : Comment ID.
+	 */
+	public function comment_state( $args ) {
+		$comment = get_comment( (int) $args[0] );
+
+		WP_CLI::line(
+			wp_json_encode(
+				array(
+					'author'  => $comment->comment_author,
+					'email'   => $comment->comment_author_email,
+					'url'     => $comment->comment_author_url,
+					'ip'      => $comment->comment_author_IP,
+					'agent'   => $comment->comment_agent,
+					'user_id' => (int) $comment->user_id,
+					'content' => $comment->comment_content,
+				)
+			)
+		);
+	}
+
+	/**
+	 * Make one member the only administrator. Prints the logins it demoted, as JSON.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <login>
+	 * : User login.
+	 */
+	public function only_administrator( $args ) {
+		$demoted = array();
+
+		foreach ( get_users( array( 'role' => 'administrator' ) ) as $admin ) {
+			if ( $admin->user_login !== $args[0] ) {
+				$admin->set_role( 'subscriber' );
+				$demoted[] = $admin->user_login;
+			}
+		}
+
+		WP_CLI::line( wp_json_encode( $demoted ) );
+	}
+
+	/**
+	 * Set a member's role.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <login>
+	 * : User login.
+	 *
+	 * <role>
+	 * : Role.
+	 */
+	public function set_role( $args ) {
+		get_user_by( 'login', $args[0] )->set_role( $args[1] );
+	}
+
+	/**
 	 * Set the After account cancellation setting, as the settings panel saves it.
 	 *
 	 * ## OPTIONS

@@ -64,6 +64,40 @@ export function postStatus(id: number): string {
 }
 
 /**
+ * Leave a comment as a member, with every personal detail WordPress stores.
+ */
+export function leaveComment(login: string): number {
+  return Number(e2e(`comment ${login}`));
+}
+
+export type CommentState = {
+  author: string;
+  email: string;
+  url: string;
+  ip: string;
+  agent: string;
+  user_id: number;
+  content: string;
+};
+
+export function commentState(id: number): CommentState {
+  return JSON.parse(e2e(`comment_state ${id}`));
+}
+
+/**
+ * Make one member the only administrator. Returns who was demoted, for restoreAdministrators().
+ */
+export function onlyAdministrator(login: string): string[] {
+  return JSON.parse(e2e(`only_administrator ${login}`));
+}
+
+export function restoreAdministrators(logins: string[]): void {
+  for (const login of logins) {
+    e2e(`set_role ${login} administrator`);
+  }
+}
+
+/**
  * Set the After account cancellation setting to a page, or clear it.
  */
 export function setRedirect(page: number | 'none'): void {

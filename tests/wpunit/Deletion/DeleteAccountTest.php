@@ -224,20 +224,52 @@ class DeleteAccountTest extends AddonTestCase {
 		$this->assertSame( 0, $hooks, 'A refused deletion must not run the cleanup hook.' );
 	}
 
-	/**
-	 * A filter called _allowed that returns false deletes the account regardless: only a
-	 * WP_Error is honoured.
-	 *
-	 * @group known-bug
-	 */
 	public function test_false_from_the_allowed_filter_stops_the_deletion() {
 		$user_id = $this->login_as_member();
 
 		add_filter( 'wpum_before_delete_account_allowed', '__return_false' );
 
-		$this->submit();
+		$result = $this->submit();
 
 		$this->assertAccountKept( $user_id );
+		$this->assertSame( array( self::NOT_ALLOWED_ERROR ), $result->errors );
+		$this->assertNull( $result->redirect );
+	}
+
+	/**
+	 * Only false or a WP_Error refuses, so a callback that forgets to return anything can't
+	 * quietly stop members deleting their accounts.
+	 */
+	public function test_nothing_returned_from_the_allowed_filter_does_not_stop_the_deletion() {
+		$user_id = $this->login_as_member();
+
+		add_filter(
+			'wpum_before_delete_account_allowed',
+			function () {
+			}
+		);
+
+		$this->submit();
+
+		$this->assertFalse( get_userdata( $user_id ) );
+	}
+
+	public function test_false_from_the_allowed_filter_runs_no_cleanup() {
+		$this->login_as_member();
+
+		add_filter( 'wpum_before_delete_account_allowed', '__return_false' );
+
+		$hooks = 0;
+		add_action(
+			'wpum_before_delete_account',
+			function () use ( &$hooks ) {
+				$hooks++;
+			}
+		);
+
+		$this->submit();
+
+		$this->assertSame( 0, $hooks );
 	}
 
 	/**

@@ -148,15 +148,26 @@ class WPUM_Form_Delete_Account extends WPUM_Form {
 				/**
 				 * Filter whether to allow the account deletion to proceed.
 				 *
-				 * Return a WP_Error to prevent deletion and display the error message.
+				 * Return a WP_Error to prevent deletion and display the error message, or
+				 * false to prevent it with a general message. It can't allow the last
+				 * administrator to delete their account: see below.
 				 *
-				 * @param bool|WP_Error $allowed True to allow, WP_Error to prevent.
+				 * @param bool|WP_Error $allowed True to allow, false or WP_Error to prevent.
 				 * @param WP_User       $user    The user requesting deletion.
 				 */
 				$allowed = apply_filters( 'wpum_before_delete_account_allowed', true, $user );
 
 				if ( is_wp_error( $allowed ) ) {
 					throw new Exception( $allowed->get_error_message() );
+				}
+
+				if ( false === $allowed ) {
+					throw new Exception( __( 'Your account cannot be deleted. Please contact the site administrator.', 'wpum-delete-account' ) );
+				}
+
+				// After the filter, so no filter can leave a site without an administrator.
+				if ( wpumda_is_last_administrator( $user ) ) {
+					throw new Exception( __( 'This is the only administrator account on this site, so it cannot be deleted. Make another user an administrator first.', 'wpum-delete-account' ) );
 				}
 
 				/**
@@ -173,7 +184,9 @@ class WPUM_Form_Delete_Account extends WPUM_Form {
 
 				require_once( ABSPATH . 'wp-admin/includes/user.php' );
 
-				wp_delete_user( $user->ID );
+				if ( wp_delete_user( $user->ID ) ) {
+					wpumda_anonymize_comments( $user );
+				}
 
 				/**
 				 * Fires after the user account has been deleted.
